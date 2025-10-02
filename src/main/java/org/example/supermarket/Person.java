@@ -1,5 +1,6 @@
 package org.example.supermarket;
 
+import com.almasb.fxgl.entity.Entity;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -8,42 +9,21 @@ import javafx.scene.shape.Arc;
 import javafx.scene.shape.Circle;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 
-public class Person {
-    private String name;
-    private int age;
-    private final Circle circle = createPerson();
-
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
+public class Person extends GameObject{
+    public Person(String name, BorderPane borderPane, Color color,  double x, double y, double width, double height) {
+        super(borderPane, name, color, x, y, width, height);
     }
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public int getAge() {
-        return age;
-    }
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Circle createPerson() {
-        Circle circle = new Circle(100, 100, 20, Color.RED);
-        return circle;
-    }
-
-    public void moveTo(int x, int y) {
-        double time = distanceBetweenPoints(circle.getCenterX(), circle.getCenterY(), x, y) / 40;
-        KeyValue keyValueX = new KeyValue(circle.centerXProperty(), x);
-        KeyValue keyValueY = new KeyValue(circle.centerYProperty(), y);
+    public void moveTo(double x, double y)
+    {
+        double time = distanceBetweenPoints(rectangle.getX(), rectangle.getY(), x, y) / 40;
+        KeyValue keyValueX = new KeyValue(rectangle.xProperty(), x);
+        KeyValue keyValueY = new KeyValue(rectangle.yProperty(), y);
 
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(time), keyValueX, keyValueY);
         Timeline timeline = new Timeline(keyFrame);
