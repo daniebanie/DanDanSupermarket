@@ -42,14 +42,15 @@ public class HelloApplication extends Application {
         Customer c2 = new Customer("Test1", "23e2", borderPane);
         Customer c3 = new Customer("Test2", "23e3", borderPane);
         Customer c4 = new Customer("Test3", "23e4", borderPane);
-        primaryStage.show();
-
+        Customer c5 = new Customer("Test5", "23e5", borderPane);
+        Shelve s1 = new Shelve("Shelve1", borderPane, 500, 400);
+        Shelve s2 = new Shelve("Shelve2", borderPane, 800, 500);
 
         c1.moveTo(200,300);
         c2.moveTo(200, 100);
         c3.moveTo(100,200);
         c4.moveTo(300, 200);
-        primaryStage.show();
+        c5.moveTo(s2.getX(), s2.getY());
         primaryStage.show();
     }
 }

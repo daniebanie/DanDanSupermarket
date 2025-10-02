@@ -1,5 +1,6 @@
 package org.example.supermarket;
 
+import com.almasb.fxgl.entity.Entity;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -12,20 +13,13 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 
-public class Person{
-    private String name;
-
-    private Rectangle rectangle;
-    public Person(String name, BorderPane borderPane, Color color) {
-
-        this.name = name;
-        rectangle = new Rectangle(200,200,50,50);
-        rectangle.fillProperty().set(color);
-        borderPane.getChildren().add(rectangle);
+public class Person extends GameObject{
+    public Person(String name, BorderPane borderPane, Color color,  double x, double y, double width, double height) {
+        super(borderPane, name, color, x, y, width, height);
     }
 
 
-    public void moveTo(int x, int y)
+    public void moveTo(double x, double y)
     {
         double time = distanceBetweenPoints(rectangle.getX(), rectangle.getY(), x, y) / 40;
         KeyValue keyValueX = new KeyValue(rectangle.xProperty(), x);

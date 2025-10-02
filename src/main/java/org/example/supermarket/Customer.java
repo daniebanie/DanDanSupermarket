@@ -6,7 +6,7 @@ public class Customer extends Person {
     private String customerId;
 
     public Customer(String name, String customerId, javafx.scene.layout.BorderPane borderPane) {
-        super(name, borderPane, Color.GREEN);
+        super(name, borderPane, Color.GREEN, 200, 200, 50, 50);
     }
 
     public String getCustomerId() {
