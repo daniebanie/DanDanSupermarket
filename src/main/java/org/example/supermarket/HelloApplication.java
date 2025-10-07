@@ -26,8 +26,30 @@ import java.util.Random;
 public class HelloApplication extends Application {
 
     public static void main(String[] args) {
+
+        ProductCatalog catalog = new ProductCatalog();
+
+        System.out.println("Alle producten:");
+        for (Product p : catalog.getAllProducts()) {
+            System.out.println(p.getName() + " - €" + p.getPrice() + " (" + p.getCategory() + ")");
+        }
+
+        System.out.println("\nProducten in de categorie 'Snacks':");
+        for (Product p : catalog.getProductsByCategory("Snacks")) {
+            System.out.println(p.getName() + " - €" + p.getPrice());
+
+        }
+
+        System.out.println("\nRandom product:");
+        Product randomProduct = catalog.getRandomProduct();
+        System.out.println(randomProduct.getName() + " - €" + randomProduct.getPrice());
+
+
+
         launch(args);
     }
+
+
 
     public void start(Stage primaryStage) {
         // Scherm maken, AFBLIJVEN!!!
@@ -73,4 +95,3 @@ public class HelloApplication extends Application {
         primaryStage.show();
     }
 }
-
