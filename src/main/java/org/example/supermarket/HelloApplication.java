@@ -1,5 +1,6 @@
 package org.example.supermarket;
 
+import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -32,25 +33,44 @@ public class HelloApplication extends Application {
         // Scherm maken, AFBLIJVEN!!!
         BorderPane borderPane = new BorderPane();
         borderPane.setStyle("-fx-background-color: lightblue;");
-        Scene scene = new Scene(borderPane, 1980, 1080);
+        Scene scene = new Scene(borderPane, 1920, 1009);
         primaryStage.setScene(scene);
         primaryStage.setTitle("DanDan");
 
-        List<Customer>  customers = new ArrayList<>();
+        // 1 Entrance en 1 Exit maken, kunnen door de Store class in elke andere klasse gevonden worden
+        Store.entrance = new Entrance(borderPane, 1500.0, 50.0);
+        Store.exit = new Exit(borderPane, 300.0, 50.0);
 
-        Customer c1 = new Customer("Test", "23e1", borderPane);
-        Customer c2 = new Customer("Test1", "23e2", borderPane);
-        Customer c3 = new Customer("Test2", "23e3", borderPane);
-        Customer c4 = new Customer("Test3", "23e4", borderPane);
-        Customer c5 = new Customer("Test5", "23e5", borderPane);
-        Shelve s1 = new Shelve("Shelve1", borderPane, 500, 400);
+        // Meerdere checkouts
+        Store.checkouts.add(new Checkout("C1", borderPane, 500, 400));
+        Store.checkouts.add(new Checkout("C2", borderPane, 500, 600));
+        Store.checkouts.add(new Checkout("C3", borderPane, 500, 800));
+
+        Store.controller = new Controller(borderPane);
+        Store.shelves.add(new Shelve("S1", borderPane, 1000, 400));
+        Shelve s1 = new Shelve("Shelve1", borderPane, 1200, 400);
         Shelve s2 = new Shelve("Shelve2", borderPane, 800, 500);
+        Store.customers.add(new Customer("Don", borderPane, List.of(s1)));
+        Store.customers.add(new Customer("Kian",  borderPane, List.of(s2,s2,s1)));
+        Store.customers.add(new Customer("Bas", borderPane, List.of(s1,s2,s1)));
 
-        c1.moveTo(200,300);
-        c2.moveTo(200, 100);
-        c3.moveTo(100,200);
-        c4.moveTo(300, 200);
-        c5.moveTo(s2.getX(), s2.getY());
+        AnimationTimer gameLoop = new AnimationTimer() {
+            private long lastUpdate = 0;
+            @Override
+            public void handle(long now) {
+                if (lastUpdate == 0) lastUpdate = now;
+                double deltaTime = (now - lastUpdate) / 1_000_000_000.0;
+                lastUpdate = now;
+                for (Customer c : Store.customers) {
+                    c.update(deltaTime);
+                }
+
+
+            }
+        };
+        gameLoop.start();
+
         primaryStage.show();
     }
 }
+

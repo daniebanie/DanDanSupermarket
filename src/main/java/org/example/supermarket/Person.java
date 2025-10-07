@@ -13,15 +13,19 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 
-public class Person extends GameObject{
+abstract class Person extends GameObject{
     public Person(String name, BorderPane borderPane, Color color,  double x, double y, double width, double height) {
         super(borderPane, name, color, x, y, width, height);
     }
-
+    protected double targetX;
+    protected double targetY;
+    protected double walkingSpeed = 100.0;
 
     public void moveTo(double x, double y)
     {
-        double time = distanceBetweenPoints(rectangle.getX(), rectangle.getY(), x, y) / 40;
+        this.targetX = x;
+        this.targetY = y;
+        double time = distanceBetweenPoints(rectangle.getX(), rectangle.getY(), x, y) / this.walkingSpeed;
         KeyValue keyValueX = new KeyValue(rectangle.xProperty(), x);
         KeyValue keyValueY = new KeyValue(rectangle.yProperty(), y);
 
