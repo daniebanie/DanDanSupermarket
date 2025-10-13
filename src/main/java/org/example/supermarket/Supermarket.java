@@ -1,29 +1,16 @@
 package org.example.supermarket;
 
 import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
-public class HelloApplication extends Application {
+public class Supermarket extends Application {
 
     public static void main(String[] args) {
 
@@ -62,6 +49,7 @@ public class HelloApplication extends Application {
         // 1 Entrance en 1 Exit maken, kunnen door de Store class in elke andere klasse gevonden worden
         Store.entrance = new Entrance(borderPane, 1500.0, 50.0);
         Store.exit = new Exit(borderPane, 300.0, 50.0);
+        Controller controller = new Controller(borderPane);
 
         // Meerdere checkouts
         Store.checkouts.add(new Checkout("C1", borderPane, 500, 400));
@@ -69,12 +57,16 @@ public class HelloApplication extends Application {
         Store.checkouts.add(new Checkout("C3", borderPane, 500, 800));
 
         Store.controller = new Controller(borderPane);
-        Store.shelves.add(new Shelve("S1", borderPane, 1000, 400));
-        Shelve s1 = new Shelve("Shelve1", borderPane, 1200, 400);
-        Shelve s2 = new Shelve("Shelve2", borderPane, 800, 500);
-        Store.customers.add(new Customer("Don", borderPane, List.of(s1)));
-        Store.customers.add(new Customer("Kian",  borderPane, List.of(s2,s2,s1)));
-        Store.customers.add(new Customer("Bas", borderPane, List.of(s1,s2,s1)));
+        Store.shelves.add(new Shelve("Heineken", borderPane, 1000, 400));
+        Store.shelves.add(new Shelve("Coca Cola", borderPane, 1200, 400));
+        Store.shelves.add(new Shelve("Spa Rood", borderPane, 1400, 400));
+        Store.shelves.add(new Shelve("Pikachu", borderPane, 1600, 400));
+        Store.shelves.add(new Shelve("X", borderPane, 1600, 600));
+        Store.shelves.add(new Shelve("Rode Wijn", borderPane, 1000, 600));
+        Store.shelves.add(new Shelve("Melk", borderPane, 1200, 600));
+        Store.shelves.add(new Shelve("Jus d'Orange", borderPane, 1400, 600));
+        Store.removeDeadShelves(borderPane);
+
 
         AnimationTimer gameLoop = new AnimationTimer() {
             private long lastUpdate = 0;
@@ -83,9 +75,22 @@ public class HelloApplication extends Application {
                 if (lastUpdate == 0) lastUpdate = now;
                 double deltaTime = (now - lastUpdate) / 1_000_000_000.0;
                 lastUpdate = now;
+
+                List<Customer> toKill = new ArrayList<>();
+
                 for (Customer c : Store.customers) {
-                    c.update(deltaTime);
+                    c.update(deltaTime, borderPane);
+                    if (c.isDone()) {
+                        toKill.add(c);
+                    }
                 }
+
+                for (Customer c : toKill) {
+                    borderPane.getChildren().remove(c.rectangle);
+                    Store.customers.remove(c);
+                }
+
+                controller.spawnCustomers(borderPane);
 
 
             }

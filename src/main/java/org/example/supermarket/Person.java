@@ -19,7 +19,7 @@ abstract class Person extends GameObject{
     }
     protected double targetX;
     protected double targetY;
-    protected double walkingSpeed = 100.0;
+    protected double walkingSpeed = 200.0;
 
     public void moveTo(double x, double y)
     {

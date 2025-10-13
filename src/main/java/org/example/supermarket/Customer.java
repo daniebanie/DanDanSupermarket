@@ -1,16 +1,19 @@
 package org.example.supermarket;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.ImagePattern;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
 public class Customer extends Person {
+
     private Queue<GameObject> shoppingList = new LinkedList<GameObject>();
     private CustomerState state = CustomerState.WALKING_TO_SHELF;
-    private double pickTime = 2.0;
+    private final double pickTime = 2.0;
     private long stateStartTime;
 
     public Customer(String name, BorderPane borderPane, List<GameObject> shelves) {
@@ -44,7 +47,7 @@ public class Customer extends Person {
         stateStartTime = System.currentTimeMillis();
     }
 
-    public void update(double deltaTime) {
+    public void update(double deltaTime, BorderPane borderPane) {
         switch (state) {
             case WALKING_TO_SHELF:
                 if (isAtDestination()) {
@@ -90,4 +93,7 @@ public class Customer extends Person {
         return Math.hypot(dx, dy) < 5;
     }
 
+    public boolean isDone() {
+        return state == CustomerState.DONE;
+    }
 }
