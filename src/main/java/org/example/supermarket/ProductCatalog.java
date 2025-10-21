@@ -18,7 +18,7 @@ public class ProductCatalog {
 
 
     // Lijst van producten
-    private void initializeCatalog() {
+    private static void initializeCatalog() {
 
         catalog.add(new DrinkProduct("Heineken", 2.50, "Bier"));
         catalog.add(new DrinkProduct("Coca Cola", 1.99, "Frisdrank"));
