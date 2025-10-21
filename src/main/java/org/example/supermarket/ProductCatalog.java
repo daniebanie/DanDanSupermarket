@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 public class ProductCatalog {
-    private List<Product> catalog;
+    private static List<Product> catalog;
     private Random random;
 
 
@@ -51,7 +51,7 @@ public class ProductCatalog {
     }
 
     // Zoekt product op met bepaalde naam
-    public Product getProductByName(String name) {
+    public static Product getProductByName(String name) {
         for (Product p : catalog) {
             if (p.getName().equalsIgnoreCase(name)) {
                 return p;
