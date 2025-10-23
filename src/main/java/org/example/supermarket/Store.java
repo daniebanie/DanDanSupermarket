@@ -10,6 +10,7 @@ public class Store {
     public static Controller controller;
     public static Entrance entrance;
     public static Exit exit;
+    public static MoneyCounter moneyCounter;
     public static List<Shelve> shelves = new ArrayList<Shelve>();
     public static List<Checkout> checkouts = new ArrayList<Checkout>();
     public static List<Customer> customers  = new ArrayList<Customer>();
@@ -42,5 +43,6 @@ public class Store {
 
     public static void pay(double price) {
         storeMoney += price;
+        moneyCounter.update();
     }
 }

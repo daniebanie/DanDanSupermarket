@@ -48,13 +48,10 @@ public class Supermarket extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("DanDan");
 
-        Text moneyCounter = new  Text("TEAST");
-        moneyCounter.setFont(new Font(20));
-        borderPane.getChildren().add(moneyCounter);
-
         // 1 Entrance en 1 Exit maken, kunnen door de Store class in elke andere klasse gevonden worden
         Store.entrance = new Entrance(borderPane, 1500.0, 50.0);
         Store.exit = new Exit(borderPane, 300.0, 50.0);
+        Store.moneyCounter = new MoneyCounter(borderPane, 1000.0, 100.0);
         Controller controller = new Controller(borderPane);
 
         // Meerdere checkouts
