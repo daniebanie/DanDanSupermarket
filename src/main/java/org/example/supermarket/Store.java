@@ -14,6 +14,8 @@ public class Store {
     public static List<Checkout> checkouts = new ArrayList<Checkout>();
     public static List<Customer> customers  = new ArrayList<Customer>();
 
+    public static double storeMoney = 0;
+
     public static void removeDeadShelves(BorderPane borderPane)
     {
         // Deze methode verwijdert de Shelves met een invalid productName.
@@ -36,5 +38,9 @@ public class Store {
             borderPane.getChildren().remove(shelve.rectangle);
             shelves.remove(shelve);
         }
+    }
+
+    public static void pay(double price) {
+        storeMoney += price;
     }
 }

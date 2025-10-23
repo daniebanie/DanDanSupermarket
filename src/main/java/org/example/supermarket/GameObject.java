@@ -3,10 +3,7 @@ package org.example.supermarket;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.image.Image;
-import javafx.scene.paint.ImagePattern;
 
-import java.io.IOException;
 import java.util.Random;
 
 public class GameObject {
@@ -30,5 +27,10 @@ public class GameObject {
 
     public void setName(String name) {
         this.objectName = name;
+    }
+
+    public String getName()
+    {
+        return this.objectName;
     }
 }

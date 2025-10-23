@@ -3,6 +3,8 @@ package org.example.supermarket;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -13,6 +15,7 @@ import java.util.List;
 public class Supermarket extends Application {
 
     public static void main(String[] args) {
+
         ProductCatalog catalog = new ProductCatalog();
 
         System.out.println("Alle producten:");
@@ -25,6 +28,10 @@ public class Supermarket extends Application {
             System.out.println(p.getName() + " - €" + p.getPrice());
 
         }
+
+        System.out.println("\nRandom product:");
+        Product randomProduct = catalog.getRandomProduct();
+        System.out.println(randomProduct.getName() + " - €" + randomProduct.getPrice());
 
 
 
@@ -41,6 +48,10 @@ public class Supermarket extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("DanDan");
 
+        Text moneyCounter = new  Text("TEAST");
+        moneyCounter.setFont(new Font(20));
+        borderPane.getChildren().add(moneyCounter);
+
         // 1 Entrance en 1 Exit maken, kunnen door de Store class in elke andere klasse gevonden worden
         Store.entrance = new Entrance(borderPane, 1500.0, 50.0);
         Store.exit = new Exit(borderPane, 300.0, 50.0);
@@ -52,20 +63,14 @@ public class Supermarket extends Application {
         Store.checkouts.add(new Checkout("C3", borderPane, 500, 800));
 
         Store.controller = new Controller(borderPane);
-
-        ProductCatalog catalog = new ProductCatalog();
-        List<Product> products = catalog.getAllProducts();
-        int[] xPositions = {1000, 1200, 1400, 1600};
-        int[] yPositions = {400, 600};
-        int index = 0;
-        for (Product product : products) {
-            if (index < xPositions.length * yPositions.length) {
-                int x = xPositions[index % xPositions.length];
-                int y = yPositions[index / xPositions.length];
-                Store.shelves.add(new Shelve(product.getName(), borderPane, x, y, 10));
-                index++;
-            }
-        }
+        Store.shelves.add(new Shelve("Heineken", borderPane, 1000, 400));
+        Store.shelves.add(new Shelve("Coca Cola", borderPane, 1200, 400));
+        Store.shelves.add(new Shelve("Spa Rood", borderPane, 1400, 400));
+        Store.shelves.add(new Shelve("Pikachu", borderPane, 1600, 400));
+        Store.shelves.add(new Shelve("X", borderPane, 1600, 600));
+        Store.shelves.add(new Shelve("Rode Wijn", borderPane, 1000, 600));
+        Store.shelves.add(new Shelve("Melk", borderPane, 1200, 600));
+        Store.shelves.add(new Shelve("Jus d'Orange", borderPane, 1400, 600));
         Store.removeDeadShelves(borderPane);
 
 
