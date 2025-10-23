@@ -1,28 +1,27 @@
 package org.example.supermarket;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ShoppingCart {
-    private List<Product> products;
+    public ArrayList<Product> items  = new ArrayList<Product>();
+    public double totalPrice = 0;
 
-    public ShoppingCart() {
-        this.products = new ArrayList<>();
+    public ShoppingCart()
+    {
     }
 
-    public void addProduct(Product product) {
-        products.add(product);
+    public void addItem(Product item)
+    {
+        this.items.add(item);
     }
 
-    public double getTotalCost() {
-        return products.stream().mapToDouble(Product::getPrice).sum();
-    }
-
-    public void clear() {
-        products.clear();
-    }
-
-    public List<Product> getProducts() {
-        return new ArrayList<>(products);
+    public double calculateTotal()
+    {
+        totalPrice = 0;
+        for (Product item : items)
+        {
+            totalPrice += item.getPrice();
+        }
+        return totalPrice;
     }
 }

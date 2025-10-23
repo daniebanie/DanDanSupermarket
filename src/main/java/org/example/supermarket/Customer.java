@@ -12,7 +12,7 @@ import java.util.Queue;
 public class Customer extends Person {
 
     private Queue<GameObject> shoppingList = new LinkedList<GameObject>();
-
+    private ShoppingCart shoppingCart = new ShoppingCart();
     private CustomerState state = CustomerState.WALKING_TO_SHELF;
     private final double pickTime = 2.0;
     private long stateStartTime;
@@ -60,9 +60,10 @@ public class Customer extends Person {
                 if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > pickTime) {
                     Shelve currentShelve = (Shelve) shoppingList.peek();
                     if (currentShelve.getCurrentCapacity() > 0) {
+                        addProductToCart(shoppingList.peek().getName());
                         currentShelve.removeProduct();
                     }
-                    shoppingList.poll();
+                    shoppingList.poll(); // done picking at this shelf
                     moveToNextShelf();
                 }
                 break;
@@ -78,8 +79,10 @@ public class Customer extends Person {
                 }
                 break;
             case CHECKING_OUT:
-                if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > pickTime) {
+                if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > shoppingCart.items.size()) {
                     moveTo(Store.exit.getX(), Store.exit.getY());
+                    Store.pay(shoppingCart.calculateTotal());
+                    System.out.println(shoppingCart.items.size() + "/" +  shoppingCart.calculateTotal() + "/" + Store.storeMoney);
                     state = CustomerState.WALKING_TO_EXIT;
                 }
                 break;
@@ -92,6 +95,10 @@ public class Customer extends Person {
         }
     }
 
+    private void addProductToCart(String productName) {
+        Product product = ProductCatalog.getProductByName(productName);
+        shoppingCart.addItem(product);
+    }
     private boolean isAtDestination() {
         double dx = rectangle.getX() - targetX;
         double dy = rectangle.getY() - targetY;
@@ -101,6 +108,4 @@ public class Customer extends Person {
     public boolean isDone() {
         return state == CustomerState.DONE;
     }
-
-
 }
