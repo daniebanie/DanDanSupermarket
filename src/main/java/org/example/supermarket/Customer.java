@@ -58,7 +58,11 @@ public class Customer extends Person {
                 break;
             case PICKING_ITEM:
                 if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > pickTime) {
-                    addProductToCart(shoppingList.peek().getName());
+                    Shelve currentShelve = (Shelve) shoppingList.peek();
+                    if (currentShelve.getCurrentCapacity() > 0) {
+                        addProductToCart(shoppingList.peek().getName());
+                        currentShelve.removeProduct();
+                    }
                     shoppingList.poll(); // done picking at this shelf
                     moveToNextShelf();
                 }

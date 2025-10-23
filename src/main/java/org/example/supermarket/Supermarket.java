@@ -63,14 +63,19 @@ public class Supermarket extends Application {
         Store.checkouts.add(new Checkout("C3", borderPane, 500, 800));
 
         Store.controller = new Controller(borderPane);
-        Store.shelves.add(new Shelve("Heineken", borderPane, 1000, 400));
-        Store.shelves.add(new Shelve("Coca Cola", borderPane, 1200, 400));
-        Store.shelves.add(new Shelve("Spa Rood", borderPane, 1400, 400));
-        Store.shelves.add(new Shelve("Pikachu", borderPane, 1600, 400));
-        Store.shelves.add(new Shelve("X", borderPane, 1600, 600));
-        Store.shelves.add(new Shelve("Rode Wijn", borderPane, 1000, 600));
-        Store.shelves.add(new Shelve("Melk", borderPane, 1200, 600));
-        Store.shelves.add(new Shelve("Jus d'Orange", borderPane, 1400, 600));
+        ProductCatalog catalog = new ProductCatalog();
+        List<Product> products = catalog.getAllProducts();
+        int[] xPositions = {1000, 1200, 1400, 1600};
+        int[] yPositions = {400, 600};
+        int index = 0;
+        for (Product product : products) {
+            if (index < xPositions.length * yPositions.length) {
+                int x = xPositions[index % xPositions.length];
+                int y = yPositions[index / xPositions.length];
+                Store.shelves.add(new Shelve(product.getName(), borderPane, x, y, 10));
+                index++;
+            }
+        }
         Store.removeDeadShelves(borderPane);
 
 
