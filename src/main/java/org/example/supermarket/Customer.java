@@ -12,6 +12,7 @@ import java.util.Queue;
 public class Customer extends Person {
 
     private Queue<GameObject> shoppingList = new LinkedList<GameObject>();
+
     private CustomerState state = CustomerState.WALKING_TO_SHELF;
     private final double pickTime = 2.0;
     private long stateStartTime;
@@ -57,7 +58,11 @@ public class Customer extends Person {
                 break;
             case PICKING_ITEM:
                 if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > pickTime) {
-                    shoppingList.poll(); // done picking at this shelf
+                    Shelve currentShelve = (Shelve) shoppingList.peek();
+                    if (currentShelve.getCurrentCapacity() > 0) {
+                        currentShelve.removeProduct();
+                    }
+                    shoppingList.poll();
                     moveToNextShelf();
                 }
                 break;
@@ -96,4 +101,6 @@ public class Customer extends Person {
     public boolean isDone() {
         return state == CustomerState.DONE;
     }
+
+
 }
