@@ -55,6 +55,13 @@ public class Customer extends Person {
                     state = CustomerState.PICKING_ITEM;
                     stateStartTime = System.currentTimeMillis();
                 }
+                if (shoppingList.peek() instanceof Shelve) {
+                    int stock = ((Shelve) shoppingList.peek()).getCurrentCapacity();
+                    if (stock == 0) {
+                        shoppingList.poll();
+                        moveToNextShelf();
+                    }
+                }
                 break;
             case PICKING_ITEM:
                 if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > pickTime) {
