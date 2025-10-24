@@ -52,6 +52,7 @@ public class Supermarket extends Application {
         Store.entrance = new Entrance(borderPane, 1500.0, 50.0);
         Store.exit = new Exit(borderPane, 300.0, 50.0);
         Store.moneyCounter = new MoneyCounter(borderPane, 1000.0, 100.0);
+        Store.moneyCounter.update();
         Controller controller = new Controller(borderPane);
 
         // Meerdere checkouts
