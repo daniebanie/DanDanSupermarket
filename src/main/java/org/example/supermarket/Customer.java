@@ -14,7 +14,7 @@ public class Customer extends Person {
     private Queue<GameObject> shoppingList = new LinkedList<GameObject>();
     private ShoppingCart shoppingCart = new ShoppingCart();
     private CustomerState state = CustomerState.WALKING_TO_SHELF;
-    private final double pickTime = 2.0;
+    private final double pickTime = 1;
     private long stateStartTime;
 
     public Customer(String name, BorderPane borderPane, List<GameObject> shelves) {
@@ -69,6 +69,10 @@ public class Customer extends Person {
                     if (currentShelve.getCurrentCapacity() > 0) {
                         addProductToCart(shoppingList.peek().getName());
                         currentShelve.removeProduct();
+                        if (currentShelve.needsRestock() &! Controller.isInRestockingShelves(currentShelve)) {
+                            Controller.restockingShelves.add(currentShelve);
+                            System.out.println("Product " + currentShelve.getName() + " needs restock");
+                        }
                     }
                     shoppingList.poll(); // done picking at this shelf
                     moveToNextShelf();
@@ -87,9 +91,9 @@ public class Customer extends Person {
                 break;
             case CHECKING_OUT:
                 if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > shoppingCart.items.size()) {
-                    moveTo(Store.exit.getX(), Store.exit.getY());
+                    moveTo(Store.exit.getX(), Store.exit.getY() - this.rectangle.getHeight() + 5);
                     Store.pay(shoppingCart.calculateTotal());
-                    System.out.println(shoppingCart.items.size() + "/" +  shoppingCart.calculateTotal() + "/" + Store.storeMoney);
+//                    System.out.println(shoppingCart.items.size() + "/" +  shoppingCart.calculateTotal() + "/" + Store.storeMoney);
                     state = CustomerState.WALKING_TO_EXIT;
                 }
                 break;

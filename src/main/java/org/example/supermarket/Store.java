@@ -10,10 +10,12 @@ public class Store {
     public static Controller controller;
     public static Entrance entrance;
     public static Exit exit;
+    public static Storage storage;
     public static MoneyCounter moneyCounter;
     public static List<Shelve> shelves = new ArrayList<Shelve>();
     public static List<Checkout> checkouts = new ArrayList<Checkout>();
     public static List<Customer> customers  = new ArrayList<Customer>();
+    public static List<Restocker> restockers   = new ArrayList<Restocker>();
 
     public static double storeMoney = 0;
 

@@ -51,9 +51,12 @@ public class Supermarket extends Application {
         // 1 Entrance en 1 Exit maken, kunnen door de Store class in elke andere klasse gevonden worden
         Store.entrance = new Entrance(borderPane, 1500.0, 50.0);
         Store.exit = new Exit(borderPane, 300.0, 50.0);
+        Store.storage = new Storage(borderPane, 1200.0, 900.0);
         Store.moneyCounter = new MoneyCounter(borderPane, 1000.0, 100.0);
         Store.moneyCounter.update();
         Controller controller = new Controller(borderPane);
+
+
 
         // Meerdere checkouts
         Store.checkouts.add(new Checkout("C1", borderPane, 500, 400));
@@ -64,7 +67,7 @@ public class Supermarket extends Application {
         ProductCatalog catalog = new ProductCatalog();
         List<Product> products = catalog.getAllProducts();
         int[] xPositions = {1000, 1200, 1400, 1600};
-        int[] yPositions = {400, 600};
+        int[] yPositions = {300, 500, 700};
         int index = 0;
         for (Product product : products) {
             if (index < xPositions.length * yPositions.length) {
@@ -99,7 +102,20 @@ public class Supermarket extends Application {
                     Store.customers.remove(c);
                 }
 
+                if (Store.restockers.isEmpty())
+                {
+                    Store.restockers.add(new Restocker("Bart", borderPane));
+                    Store.restockers.add(new Restocker("Bart", borderPane));
+                    Store.restockers.add(new Restocker("Bart", borderPane));
+                }
+
                 controller.spawnCustomers(borderPane);
+                controller.checkRestockableShelves();
+
+                for (Restocker r : Store.restockers) {
+                    r.update();
+                }
+
 
 
             }

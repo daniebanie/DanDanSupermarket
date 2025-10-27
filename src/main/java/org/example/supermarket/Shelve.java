@@ -40,6 +40,11 @@ public class Shelve extends GameObject {
             updateHealthBar();
         }
     }
+    public void addProduct() {
+        if (currentCapacity < maxCapacity) {
+            currentCapacity++;
+        }
+    }
 
     public int getCurrentCapacity() {
         return currentCapacity;
@@ -49,10 +54,20 @@ public class Shelve extends GameObject {
         return maxCapacity;
     }
 
-    public void removeDeadShelves(Shelve shelve) {
+    public Boolean needsRestock() {
+        if ((double) currentCapacity / maxCapacity <= 0.8) {
+            return true;
+        }
+        return false;
+    }
+    public Boolean isFull() {
+        if (currentCapacity == maxCapacity) {
+            return true;
+        }
+        return false;
     }
 
-    private void updateHealthBar() {
+    public void updateHealthBar() {
         double healthPercentage = (double) currentCapacity / maxCapacity;
         healthBar.setWidth(100 * healthPercentage);
         healthBar.setFill(healthPercentage > 0.3 ? Color.GREEN : Color.RED);
