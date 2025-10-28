@@ -9,6 +9,7 @@ import java.util.Random;
 public class GameObject {
     String objectName;
     public Random rand = new Random();
+    public Healthbar healthbar;
 
     protected Rectangle rectangle;
     public GameObject(BorderPane borderPane, String objectName, Color color, double x, double y, double width, double height) {

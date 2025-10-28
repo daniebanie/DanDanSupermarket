@@ -10,8 +10,6 @@ public class Shelve extends GameObject {
     private Product product;
     private int maxCapacity;
     private int currentCapacity;
-    private Rectangle healthBar;
-    private Label capacityLabel;
 
     public Shelve(String productName, BorderPane borderPane, double x, double y, int maxCapacity) {
         super(borderPane, productName, Color.BROWN, x, y, 100, 70);
@@ -19,30 +17,21 @@ public class Shelve extends GameObject {
         this.maxCapacity = maxCapacity;
         this.currentCapacity = maxCapacity;
 
-        // maak een healthbar aan
-        healthBar = new Rectangle(x, y - 20, 100, 10);
-        healthBar.setFill(Color.GREEN);
-        healthBar.setStroke(Color.BLACK);
+        this.healthbar = new Healthbar(borderPane, currentCapacity, maxCapacity, x, y);
 
-        // Create capacity label
-        capacityLabel = new Label(currentCapacity + "/" + maxCapacity);
-        capacityLabel.setLayoutX(x + 40 - (capacityLabel.getWidth() / 2));
-        capacityLabel.setLayoutY(y - 30);
-
-        // voeg toe aan borderPane
-        borderPane.getChildren().addAll(healthBar, capacityLabel);
     }
 
 
     public void removeProduct() {
         if (currentCapacity > 0) {
             currentCapacity--;
-            updateHealthBar();
+            this.healthbar.updateHealthBar(currentCapacity);
         }
     }
     public void addProduct() {
         if (currentCapacity < maxCapacity) {
             currentCapacity++;
+            this.healthbar.updateHealthBar(currentCapacity);
         }
     }
 
@@ -67,10 +56,5 @@ public class Shelve extends GameObject {
         return false;
     }
 
-    public void updateHealthBar() {
-        double healthPercentage = (double) currentCapacity / maxCapacity;
-        healthBar.setWidth(100 * healthPercentage);
-        healthBar.setFill(healthPercentage > 0.3 ? Color.GREEN : Color.RED);
-        capacityLabel.setText(currentCapacity + "/" + maxCapacity);
-    }
+
 }

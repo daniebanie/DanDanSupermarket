@@ -80,7 +80,6 @@ public class Restocker extends Person {
                 if ((System.currentTimeMillis() - stateStartTime) / 100.0 > pickTime) {
                     stateStartTime = System.currentTimeMillis();
                     shelve.addProduct();
-                    shelve.updateHealthBar();
                     currentStock--;
                     System.out.println("PutProduct " + shelve.objectName);
 
