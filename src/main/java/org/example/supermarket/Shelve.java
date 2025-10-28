@@ -17,7 +17,7 @@ public class Shelve extends GameObject {
         this.maxCapacity = maxCapacity;
         this.currentCapacity = maxCapacity;
 
-        this.healthbar = new Healthbar(borderPane, currentCapacity, maxCapacity, x, y);
+        this.healthbar = new Healthbar(stack, currentCapacity, maxCapacity, x, y , 100);
 
     }
 
@@ -25,13 +25,13 @@ public class Shelve extends GameObject {
     public void removeProduct() {
         if (currentCapacity > 0) {
             currentCapacity--;
-            this.healthbar.updateHealthBar(currentCapacity);
+            this.healthbar.updateHealthBar(currentCapacity, Healthbar.ObjectType.SHELF);
         }
     }
     public void addProduct() {
         if (currentCapacity < maxCapacity) {
             currentCapacity++;
-            this.healthbar.updateHealthBar(currentCapacity);
+            this.healthbar.updateHealthBar(currentCapacity, Healthbar.ObjectType.SHELF);
         }
     }
 

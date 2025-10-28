@@ -6,6 +6,7 @@ module org.example.supermarket {
     requires com.almasb.fxgl.all;
     requires javafx.graphics;
     requires javafx.base;
+    requires java.desktop;
 
     opens org.example.supermarket to javafx.fxml;
     exports org.example.supermarket;

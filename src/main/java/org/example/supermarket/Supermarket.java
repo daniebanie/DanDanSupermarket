@@ -8,6 +8,7 @@ import javafx.scene.text.Text;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,12 +49,8 @@ public class Supermarket extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("DanDan");
 
-        // 1 Entrance en 1 Exit maken, kunnen door de Store class in elke andere klasse gevonden worden
+        // Supermarkt maken
         Store.create(borderPane);
-
-
-
-
 
         AnimationTimer gameLoop = new AnimationTimer() {
             private long lastUpdate = 0;
@@ -63,41 +60,11 @@ public class Supermarket extends Application {
                 double deltaTime = (now - lastUpdate) / 1_000_000_000.0;
                 lastUpdate = now;
 
-                List<Customer> toKill = new ArrayList<>();
-
-                for (Customer c : Store.customers) {
-                    c.update(deltaTime, borderPane);
-                    if (c.isDone()) {
-                        toKill.add(c);
-                    }
-                }
-
-                for (Customer c : toKill) {
-                    borderPane.getChildren().remove(c.rectangle);
-                    Store.customers.remove(c);
-                    Store.customerCounter.update();
-                }
-
-                if (Store.restockers.isEmpty())
-                {
-                    Store.restockers.add(new Restocker("Bart", borderPane));
-                    Store.restockers.add(new Restocker("Bart", borderPane));
-                    Store.restockers.add(new Restocker("Bart", borderPane));
-                }
-
-                Store.controller.spawnCustomers(borderPane);
-                Store.controller.checkRestockableShelves();
-
-                for (Restocker r : Store.restockers) {
-                    r.update();
-                }
-
-
-
+                // Supermarkt updaten
+                Store.controller.update(borderPane, deltaTime);
             }
         };
         gameLoop.start();
-
         primaryStage.show();
     }
 }

@@ -11,7 +11,7 @@ import java.util.Queue;
 
 public class Restocker extends Person {
     private CustomerState state = CustomerState.WALKING_TO_STORAGE;
-    private final double pickTime = 2.0;
+    private final double pickTime = 1.0;
     private long stateStartTime;
     private int maxStock = 10;
     private int currentStock;
@@ -19,6 +19,8 @@ public class Restocker extends Person {
 
     public Restocker(String name, BorderPane borderPane) {
         super(name, borderPane, Color.RED, Store.entrance.getX(), Store.entrance.getY(), 50, 50);
+        healthbar = new Healthbar(stack, currentStock, maxStock, this.rectangle.getX(), this.rectangle.getY() - 20, 50);
+        updateHealth();
         moveToStorage();
     }
 
@@ -58,6 +60,7 @@ public class Restocker extends Person {
             case PICKING_BOX:
                 if ((System.currentTimeMillis() - stateStartTime) / 100.0 > pickTime) {
                     currentStock++;
+                    updateHealth();
                 }
                 if (currentStock == maxStock) {
                     if (shelve != null) {
@@ -81,6 +84,7 @@ public class Restocker extends Person {
                     stateStartTime = System.currentTimeMillis();
                     shelve.addProduct();
                     currentStock--;
+                    updateHealth();
                     System.out.println("PutProduct " + shelve.objectName);
 
                     if (currentStock == 0) {
@@ -163,9 +167,7 @@ public class Restocker extends Person {
         state = CustomerState.WALKING_TO_SHELF;
     }
 
-    private boolean isAtDestination() {
-        double dx = rectangle.getX() - targetX;
-        double dy = rectangle.getY() - targetY;
-        return Math.hypot(dx, dy) < 5;
+    private void updateHealth() {
+        this.healthbar.updateHealthBar(currentStock, Healthbar.ObjectType.RESTOCKER);
     }
 }

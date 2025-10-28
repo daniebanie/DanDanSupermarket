@@ -1,6 +1,8 @@
 package org.example.supermarket;
 
+import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -8,6 +10,7 @@ import java.util.Random;
 
 public class GameObject {
     String objectName;
+    StackPane stack = new StackPane();
     public Random rand = new Random();
     public Healthbar healthbar;
 
@@ -17,14 +20,20 @@ public class GameObject {
         rectangle = new Rectangle(x,y,width,height);
         rectangle.fillProperty().set(color);
         rectangle.setStroke(Color.BLACK);
-        borderPane.getChildren().add(rectangle);
+
+        stack.getChildren().addAll(rectangle);
+
+        stack.setLayoutX(x);
+        stack.setLayoutY(y);
+        stack.setAlignment(Pos.TOP_LEFT);
+        borderPane.getChildren().add(stack);
     }
 
     double getX() {
-        return rectangle.getX();
+        return stack.getLayoutX();
     }
     double getY() {
-        return rectangle.getY();
+        return stack.getLayoutY();
     }
 
     public void setName(String name) {

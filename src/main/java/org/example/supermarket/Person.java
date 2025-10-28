@@ -25,9 +25,9 @@ abstract class Person extends GameObject{
     {
         this.targetX = x;
         this.targetY = y;
-        double time = distanceBetweenPoints(rectangle.getX(), rectangle.getY(), x, y) / this.walkingSpeed;
-        KeyValue keyValueX = new KeyValue(rectangle.xProperty(), x);
-        KeyValue keyValueY = new KeyValue(rectangle.yProperty(), y);
+        double time = distanceBetweenPoints(stack.getLayoutX(), stack.getLayoutY(), x, y) / this.walkingSpeed;
+        KeyValue keyValueX = new KeyValue(stack.layoutXProperty(), x);
+        KeyValue keyValueY = new KeyValue(stack.layoutYProperty(), y);
 
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(time), keyValueX, keyValueY);
         Timeline timeline = new Timeline(keyFrame);
@@ -40,5 +40,11 @@ abstract class Person extends GameObject{
         double cb = Math.abs(x2 - x1);
 
         return Math.hypot(ac, cb);
+    }
+
+    public boolean isAtDestination() {
+        double dx = stack.getLayoutX() - targetX;
+        double dy = stack.getLayoutY() - targetY;
+        return Math.hypot(dx, dy) < 5;
     }
 }

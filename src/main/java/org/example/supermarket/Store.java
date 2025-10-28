@@ -82,6 +82,10 @@ public class Store {
             }
         }
 
+        for (int i = 0; i < 3; i++) {
+            Store.restockers.add(new Restocker("Bart", borderPane));
+        }
+
         // Check of er shelves zijn zonder geldige productnaam (eigenlijk overbodig)
         removeDeadShelves(borderPane);
     }

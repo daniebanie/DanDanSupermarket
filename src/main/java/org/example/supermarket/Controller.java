@@ -3,6 +3,7 @@ package org.example.supermarket;
 import java.util.*;
 
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 import static org.example.supermarket.Restocker.CustomerState.WAITING_FOR_ORDER;
 
@@ -19,8 +20,14 @@ public class Controller {
 
     }
 
-    public void spawnCustomers(BorderPane borderPane)
-    {
+    public void update(BorderPane borderPane, double deltaTime) {
+        spawnCustomers(borderPane);
+        checkRestockableShelves();
+        updateCustomers(deltaTime, borderPane);
+        updateRestockers();
+    }
+    // CUSTOMER LOGICA
+    public void spawnCustomers(BorderPane borderPane) {
         if (Store.customers.size() < maxCustomers && (System.currentTimeMillis() - spawnStartTime) / 1000.0 > spawnTime)
         {
             Store.customers.add(( new Customer("dan", borderPane, createShoppingList())));
@@ -41,6 +48,24 @@ public class Controller {
 
     }
 
+    public void updateCustomers(double deltaTime, BorderPane borderPane) {
+        List<Customer> toKill = new ArrayList<>();
+
+        for (Customer c : Store.customers) {
+            c.update(deltaTime, borderPane);
+            if (c.isDone()) {
+                toKill.add(c);
+            }
+        }
+
+        for (Customer c : toKill) {
+            borderPane.getChildren().remove(c.stack);
+            Store.customers.remove(c);
+            Store.customerCounter.update();
+        }
+    }
+
+    // RESTOCKER LOGICA
     public void checkRestockableShelves() {
         Iterator<Shelve> iterator = restockingShelves.iterator();
 
@@ -59,8 +84,7 @@ public class Controller {
         }
     }
 
-    public static Boolean isInRestockingShelves(Shelve shelve)
-    {
+    public static Boolean isInRestockingShelves(Shelve shelve) {
         for (Shelve checkShelve : restockingShelves)
         {
             if (checkShelve.equals(shelve))
@@ -69,6 +93,12 @@ public class Controller {
             }
         }
         return false;
+    }
+
+    public void updateRestockers() {
+        for (Restocker r : Store.restockers) {
+            r.update();
+        }
     }
 
     public int getMaxCustomers() {
