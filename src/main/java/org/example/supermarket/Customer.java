@@ -42,7 +42,7 @@ public class Customer extends Person {
         else{
             int targetNumber = rand.nextInt(Store.checkouts.size());
             GameObject target = Store.checkouts.get(targetNumber);
-            moveTo(target.getX(), target.getY());
+            moveTo(target.getX(), target.getY() - this.rectangle.getHeight() - 5);
             state = CustomerState.WALKING_TO_CHECKOUT;
         }
         stateStartTime = System.currentTimeMillis();
@@ -91,7 +91,7 @@ public class Customer extends Person {
                 break;
             case CHECKING_OUT:
                 if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > shoppingCart.items.size()) {
-                    moveTo(Store.exit.getX(), Store.exit.getY() - this.rectangle.getHeight() + 5);
+                    moveTo(Store.exit.getX(), Store.exit.getY());
                     Store.pay(shoppingCart.calculateTotal());
 //                    System.out.println(shoppingCart.items.size() + "/" +  shoppingCart.calculateTotal() + "/" + Store.storeMoney);
                     state = CustomerState.WALKING_TO_EXIT;

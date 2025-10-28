@@ -15,6 +15,7 @@ public class GameObject {
         this.objectName = objectName;
         rectangle = new Rectangle(x,y,width,height);
         rectangle.fillProperty().set(color);
+        rectangle.setStroke(Color.BLACK);
         borderPane.getChildren().add(rectangle);
     }
 

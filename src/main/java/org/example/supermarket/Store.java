@@ -12,6 +12,9 @@ public class Store {
     public static Exit exit;
     public static Storage storage;
     public static MoneyCounter moneyCounter;
+    public static CustomerCounter customerCounter;
+    public static ProductCatalog catalog = new ProductCatalog();
+    public static List<Product> products = catalog.getAllProducts();
     public static List<Shelve> shelves = new ArrayList<Shelve>();
     public static List<Checkout> checkouts = new ArrayList<Checkout>();
     public static List<Customer> customers  = new ArrayList<Customer>();
@@ -46,5 +49,40 @@ public class Store {
     public static void pay(double price) {
         storeMoney += price;
         moneyCounter.update();
+    }
+
+    public static void create (BorderPane borderPane) {
+        // Alle onderdelen van de supermarkt aanmaken
+        entrance = new Entrance(borderPane, 1500.0, 50.0);
+        exit = new Exit(borderPane, 300.0, 50.0);
+        storage = new Storage(borderPane, 1200.0, 900.0);
+
+        controller = new Controller(borderPane);
+
+        moneyCounter = new MoneyCounter(borderPane, 1000.0, 100.0);
+        moneyCounter.update();
+        customerCounter = new CustomerCounter(borderPane, 1600.0, 30.0);
+        customerCounter.update();
+
+        // Meerdere checkouts aanmaken
+        checkouts.add(new Checkout("C1", borderPane, 500, 400));
+        checkouts.add(new Checkout("C2", borderPane, 500, 600));
+        checkouts.add(new Checkout("C3", borderPane, 500, 800));
+
+        // Logica om de Shelves te maken gebaseerd op de bestaande producten in products
+        int[] xPositions = {800, 1000, 1200, 1400, 1600};
+        int[] yPositions = {300, 500, 700};
+        int index = 0;
+        for (Product product : products) {
+            if (index < xPositions.length * yPositions.length) {
+                int x = xPositions[index % xPositions.length];
+                int y = yPositions[index / xPositions.length];
+                shelves.add(new Shelve(product.getName(), borderPane, x, y, 10));
+                index++;
+            }
+        }
+
+        // Check of er shelves zijn zonder geldige productnaam (eigenlijk overbodig)
+        removeDeadShelves(borderPane);
     }
 }

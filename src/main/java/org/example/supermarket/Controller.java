@@ -14,7 +14,6 @@ public class Controller {
     private long spawnStartTime = System.currentTimeMillis();
     public Random rand = new Random();
     public static List<Shelve>  restockingShelves = new LinkedList<>();
-    public static List<Shelve> removeRestockingShelves = new LinkedList<>();
 
     public Controller(BorderPane borderPane) {
 
@@ -25,6 +24,7 @@ public class Controller {
         if (Store.customers.size() < maxCustomers && (System.currentTimeMillis() - spawnStartTime) / 1000.0 > spawnTime)
         {
             Store.customers.add(( new Customer("dan", borderPane, createShoppingList())));
+            Store.customerCounter.update();
             spawnStartTime = System.currentTimeMillis();
         }
     }
@@ -71,4 +71,7 @@ public class Controller {
         return false;
     }
 
+    public int getMaxCustomers() {
+        return maxCustomers;
+    }
 }

@@ -17,6 +17,7 @@ public class MoneyCounter {
     public MoneyCounter(BorderPane borderPane, Double  x, Double y) {
         rectangle = new Rectangle(200,50);
         rectangle.setFill(Color.LIGHTGREEN);
+        rectangle.setStroke(Color.BLACK);
         text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
         stack.getChildren().addAll(rectangle, text);
         stack.setLayoutX(x);
