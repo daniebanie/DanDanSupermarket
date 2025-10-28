@@ -14,12 +14,14 @@ public class Customer extends Person {
     private Queue<GameObject> shoppingList = new LinkedList<GameObject>();
     private ShoppingCart shoppingCart = new ShoppingCart();
     private CustomerState state = CustomerState.WALKING_TO_SHELF;
-    private final double pickTime = 2.0;
+    private final double pickTime = 1.0;
     private long stateStartTime;
 
     public Customer(String name, BorderPane borderPane, List<GameObject> shelves) {
         super(name, borderPane, Color.GREEN, Store.entrance.getX(), Store.entrance.getY(), 50, 50);
         shoppingList.addAll(shelves);
+        healthbar = new Healthbar(stack, shoppingCart.items.size(), shoppingList.size(), this.rectangle.getX(), this.rectangle.getY() - 20, 50);
+        updateHealth();
         moveToNextShelf();
     }
 
@@ -36,13 +38,13 @@ public class Customer extends Person {
     private void moveToNextShelf() {
         if (!shoppingList.isEmpty()) {
             GameObject target = shoppingList.peek();
-            moveTo(target.getX(), target.getY());
+            moveTo(target.stack.getLayoutX(), target.stack.getLayoutY());
             state = CustomerState.WALKING_TO_SHELF;
         }
         else{
             int targetNumber = rand.nextInt(Store.checkouts.size());
             GameObject target = Store.checkouts.get(targetNumber);
-            moveTo(target.getX(), target.getY());
+            moveTo(target.getX(), target.getY() - this.rectangle.getHeight() - 5);
             state = CustomerState.WALKING_TO_CHECKOUT;
         }
         stateStartTime = System.currentTimeMillis();
@@ -55,13 +57,25 @@ public class Customer extends Person {
                     state = CustomerState.PICKING_ITEM;
                     stateStartTime = System.currentTimeMillis();
                 }
+                if (shoppingList.peek() instanceof Shelve) {
+                    int stock = ((Shelve) shoppingList.peek()).getCurrentCapacity();
+                    if (stock == 0) {
+                        shoppingList.poll();
+                        moveToNextShelf();
+                    }
+                }
                 break;
             case PICKING_ITEM:
                 if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > pickTime) {
                     Shelve currentShelve = (Shelve) shoppingList.peek();
                     if (currentShelve.getCurrentCapacity() > 0) {
                         addProductToCart(shoppingList.peek().getName());
+                        updateHealth();
                         currentShelve.removeProduct();
+                        if (currentShelve.needsRestock() &! Controller.isInRestockingShelves(currentShelve)) {
+                            Controller.restockingShelves.add(currentShelve);
+                            System.out.println("Product " + currentShelve.getName() + " needs restock");
+                        }
                     }
                     shoppingList.poll(); // done picking at this shelf
                     moveToNextShelf();
@@ -82,7 +96,7 @@ public class Customer extends Person {
                 if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > shoppingCart.items.size()) {
                     moveTo(Store.exit.getX(), Store.exit.getY());
                     Store.pay(shoppingCart.calculateTotal());
-                    System.out.println(shoppingCart.items.size() + "/" +  shoppingCart.calculateTotal() + "/" + Store.storeMoney);
+//                    System.out.println(shoppingCart.items.size() + "/" +  shoppingCart.calculateTotal() + "/" + Store.storeMoney);
                     state = CustomerState.WALKING_TO_EXIT;
                 }
                 break;
@@ -95,15 +109,14 @@ public class Customer extends Person {
         }
     }
 
+    private void updateHealth() {
+        this.healthbar.updateHealthBar(shoppingCart.items.size(), Healthbar.ObjectType.CUSTOMER);
+    }
     private void addProductToCart(String productName) {
         Product product = ProductCatalog.getProductByName(productName);
         shoppingCart.addItem(product);
     }
-    private boolean isAtDestination() {
-        double dx = rectangle.getX() - targetX;
-        double dy = rectangle.getY() - targetY;
-        return Math.hypot(dx, dy) < 5;
-    }
+
 
     public boolean isDone() {
         return state == CustomerState.DONE;

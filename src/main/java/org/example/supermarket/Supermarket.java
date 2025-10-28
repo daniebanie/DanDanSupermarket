@@ -8,6 +8,7 @@ import javafx.scene.text.Text;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,33 +49,8 @@ public class Supermarket extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("DanDan");
 
-        // 1 Entrance en 1 Exit maken, kunnen door de Store class in elke andere klasse gevonden worden
-        Store.entrance = new Entrance(borderPane, 1500.0, 50.0);
-        Store.exit = new Exit(borderPane, 300.0, 50.0);
-        Store.moneyCounter = new MoneyCounter(borderPane, 1000.0, 100.0);
-        Controller controller = new Controller(borderPane);
-
-        // Meerdere checkouts
-        Store.checkouts.add(new Checkout("C1", borderPane, 500, 400));
-        Store.checkouts.add(new Checkout("C2", borderPane, 500, 600));
-        Store.checkouts.add(new Checkout("C3", borderPane, 500, 800));
-
-        Store.controller = new Controller(borderPane);
-        ProductCatalog catalog = new ProductCatalog();
-        List<Product> products = catalog.getAllProducts();
-        int[] xPositions = {1000, 1200, 1400, 1600};
-        int[] yPositions = {400, 600};
-        int index = 0;
-        for (Product product : products) {
-            if (index < xPositions.length * yPositions.length) {
-                int x = xPositions[index % xPositions.length];
-                int y = yPositions[index / xPositions.length];
-                Store.shelves.add(new Shelve(product.getName(), borderPane, x, y, 10));
-                index++;
-            }
-        }
-        Store.removeDeadShelves(borderPane);
-
+        // Supermarkt maken
+        Store.create(borderPane);
 
         AnimationTimer gameLoop = new AnimationTimer() {
             private long lastUpdate = 0;
@@ -84,27 +60,11 @@ public class Supermarket extends Application {
                 double deltaTime = (now - lastUpdate) / 1_000_000_000.0;
                 lastUpdate = now;
 
-                List<Customer> toKill = new ArrayList<>();
-
-                for (Customer c : Store.customers) {
-                    c.update(deltaTime, borderPane);
-                    if (c.isDone()) {
-                        toKill.add(c);
-                    }
-                }
-
-                for (Customer c : toKill) {
-                    borderPane.getChildren().remove(c.rectangle);
-                    Store.customers.remove(c);
-                }
-
-                controller.spawnCustomers(borderPane);
-
-
+                // Supermarkt updaten
+                Store.controller.update(borderPane, deltaTime);
             }
         };
         gameLoop.start();
-
         primaryStage.show();
     }
 }

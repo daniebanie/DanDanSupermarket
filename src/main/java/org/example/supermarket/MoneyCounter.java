@@ -11,12 +11,13 @@ import javafx.scene.text.Text;
 
 public class MoneyCounter {
 
-    Text text = new  Text("0.00");
+    Text text = new  Text();
     Rectangle rectangle;
     StackPane stack = new StackPane();
     public MoneyCounter(BorderPane borderPane, Double  x, Double y) {
-        rectangle = new Rectangle(200,100);
+        rectangle = new Rectangle(200,50);
         rectangle.setFill(Color.LIGHTGREEN);
+        rectangle.setStroke(Color.BLACK);
         text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
         stack.getChildren().addAll(rectangle, text);
         stack.setLayoutX(x);
@@ -25,6 +26,6 @@ public class MoneyCounter {
     }
 
     public void update() {
-        this.text.setText(String.format("%.2f", Store.storeMoney));
+        this.text.setText("Money: " + String.format("%.2f", Store.storeMoney));
     }
 }
