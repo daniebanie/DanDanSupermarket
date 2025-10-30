@@ -9,11 +9,22 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 
+/**
+ * telt en toont het aantal klanten in de supermarkt
+ */
 public class CustomerCounter {
 
     Text text = new  Text();
     Rectangle rectangle;
     StackPane stack = new StackPane();
+
+    /**
+     * maakt een nieuwe customercounter aan
+     *
+     * @param borderPane het borderpane waarop de teller wordt geplaatst
+     * @param x de x-positie
+     * @param y de y-positie
+     */
     public CustomerCounter(BorderPane borderPane, Double  x, Double y) {
         rectangle = new Rectangle(175,40);
         rectangle.setFill(Color.LIGHTGOLDENRODYELLOW);
@@ -26,6 +37,9 @@ public class CustomerCounter {
         borderPane.getChildren().add(stack);
     }
 
+    /**
+     * werkt de tekst van de teller bij
+     */
     public void update() {
         this.text.setText("Customers: " + Store.customers.size() + " / " + Store.controller.getMaxCustomers());
     }

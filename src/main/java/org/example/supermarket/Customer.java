@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Queue;
 
 public class Customer extends Person {
-
+    /**
+     * een klant in de supermarkt die automatisch producten verzamelt, afrekent en vertrekt
+     */
     private Queue<GameObject> shoppingList = new LinkedList<GameObject>();
     private ShoppingCart shoppingCart = new ShoppingCart();
     private CustomerState state = CustomerState.WALKING_TO_SHELF;
@@ -18,6 +20,13 @@ public class Customer extends Person {
     private long stateStartTime;
     private Checkout myCheckout;  // De gekozen kassa voor deze klant (voor rij-beheer)
 
+    /**
+     * maakt een nieuwe klant aan en vult zijn winkelroute met rekken
+     *
+     * @param name de naam van de klant
+     * @param borderPane het paneel waarop de klant wordt weergegeven
+     * @param shelves de lijst met rekken die de klant bezoekt
+     */
     public Customer(String name, BorderPane borderPane, List<GameObject> shelves) {
         super(name, borderPane, Color.GREEN, Store.entrance.getX(), Store.entrance.getY(), 50, 50);
         shoppingList.addAll(shelves);
@@ -26,6 +35,9 @@ public class Customer extends Person {
         moveToNextShelf();
     }
 
+    /**
+     * beschrijft de mogelijke toestanden van een klant
+     */
     public enum CustomerState {
         WALKING_TO_SHELF,
         PICKING_ITEM,
@@ -36,6 +48,9 @@ public class Customer extends Person {
         DONE
     }
 
+    /**
+     * bepaalt het volgende doel van de klant, rek of kassa
+     */
     private void moveToNextShelf() {
         if (!shoppingList.isEmpty()) {
             GameObject target = shoppingList.peek();
@@ -46,7 +61,7 @@ public class Customer extends Person {
             Checkout selectedCheckout = (Checkout) Store.checkouts.get(targetNumber);
             myCheckout = selectedCheckout;
 
-            // Bereken positie horizontaal naar rechts vanaf de kassa
+            // bereken positie horizontaal naar rechts vanaf de kassa
             int currentLineSize = myCheckout.getLineSize();
             double targetX = myCheckout.getX() + myCheckout.rectangle.getWidth() + (currentLineSize + 1) * (this.rectangle.getWidth() + 10);
             double targetY = myCheckout.getY();
@@ -56,6 +71,12 @@ public class Customer extends Person {
         stateStartTime = System.currentTimeMillis();
     }
 
+    /**
+     * voert logica uit per frame: bewegen, producten pakken, wachten en afrekenen
+     *
+     * @param deltaTime verstreken tijd sinds laatste frame
+     * @param borderPane het speelveld waarop de klant beweegt
+     */
     public void update(double deltaTime, BorderPane borderPane) {
         switch (state) {
             case WALKING_TO_SHELF:
@@ -133,15 +154,28 @@ public class Customer extends Person {
         }
     }
 
+    /**
+     * werkt de healthbar bij op basis van de gevulde winkelwagen
+     */
     private void updateHealth() {
         this.healthbar.updateHealthBar(shoppingCart.items.size(), Healthbar.ObjectType.CUSTOMER);
     }
 
+    /**
+     * voegt een product toe aan de winkelwagen
+     *
+     * @param productName de naam van het product
+     */
     private void addProductToCart(String productName) {
         Product product = ProductCatalog.getProductByName(productName);
         shoppingCart.addItem(product);
     }
 
+    /**
+     * controleert of de klant klaar is met winkelen
+     *
+     * @return true als de klant de winkel heeft verlaten
+     */
     public boolean isDone() {
         return state == CustomerState.DONE;
     }

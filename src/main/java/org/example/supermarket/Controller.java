@@ -7,6 +7,9 @@ import javafx.stage.Stage;
 
 import static org.example.supermarket.Restocker.CustomerState.WAITING_FOR_ORDER;
 
+/**
+ * bestuurt de logica van de supermarkt, inclusief klanten, rekken en restockers
+ */
 public class Controller {
 
     private double spawnTime = 2.0;
@@ -16,17 +19,33 @@ public class Controller {
     public Random rand = new Random();
     public static List<Shelve>  restockingShelves = new LinkedList<>();
 
+    /**
+     * maakt een nieuwe controller aan die de simulatie bestuurt
+     *
+     * @param borderPane het bord waarop de objecten staan
+     */
     public Controller(BorderPane borderPane) {
 
     }
 
+    /**
+     * voert elke updatecyclus uit: klanten spawnen, rekken bijvullen en restockers aansturen
+     *
+     * @param borderPane het hoofdscherm
+     * @param deltaTime verstreken tijd sinds de vorige update
+     */
     public void update(BorderPane borderPane, double deltaTime) {
         spawnCustomers(borderPane);
         checkRestockableShelves();
         updateCustomers(deltaTime, borderPane);
         updateRestockers();
     }
-    // CUSTOMER LOGICA
+
+    /**
+     * spawnt nieuwe klanten als het maximum nog niet is bereikt en de wachttijd voorbij is
+     *
+     * @param borderPane het speelveld waar klanten worden toegevoegd
+     */
     public void spawnCustomers(BorderPane borderPane) {
         if (Store.customers.size() < maxCustomers && (System.currentTimeMillis() - spawnStartTime) / 1000.0 > spawnTime)
         {
@@ -36,6 +55,11 @@ public class Controller {
         }
     }
 
+    /**
+     * maakt een willekeurige boodschappenlijst met rekken voor een klant
+     *
+     * @return lijst van rekken die de klant zal bezoeken
+     */
     public List<GameObject> createShoppingList() {
         List<GameObject> list = new LinkedList<GameObject>();
         int numberOfShelves = rand.nextInt(maxShoppingListSize) + 1;
@@ -48,6 +72,12 @@ public class Controller {
 
     }
 
+    /**
+     * werkt alle klanten bij en verwijdert degenen die klaar zijn met winkelen
+     *
+     * @param deltaTime verstreken tijd
+     * @param borderPane het scherm waarop de klanten bewegen
+     */
     public void updateCustomers(double deltaTime, BorderPane borderPane) {
         List<Customer> toKill = new ArrayList<>();
 
@@ -65,7 +95,9 @@ public class Controller {
         }
     }
 
-    // RESTOCKER LOGICA
+    /**
+     * controleert welke rekken moeten worden bijgevuld en geeft opdrachten aan beschikbare restockers
+     */
     public void checkRestockableShelves() {
         Iterator<Shelve> iterator = restockingShelves.iterator();
 
@@ -84,6 +116,12 @@ public class Controller {
         }
     }
 
+    /**
+     * controleert of een rek al in de lijst van te restocken rekken staat
+     *
+     * @param shelve het rek dat gecontroleerd wordt
+     * @return true als het rek al in de restock-lijst staat
+     */
     public static Boolean isInRestockingShelves(Shelve shelve) {
         for (Shelve checkShelve : restockingShelves)
         {
@@ -95,12 +133,20 @@ public class Controller {
         return false;
     }
 
+    /**
+     * werkt alle restockers bij zodat zij hun opdrachten kunnen uitvoeren
+     */
     public void updateRestockers() {
         for (Restocker r : Store.restockers) {
             r.update();
         }
     }
 
+    /**
+     * geeft het maximum aantal klanten dat tegelijk aanwezig mag zijn
+     *
+     * @return maximum aantal klanten
+     */
     public int getMaxCustomers() {
         return maxCustomers;
     }
