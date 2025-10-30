@@ -4,53 +4,66 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * de catalogus van producten in de supermarkt.
+ * houdt een lijst bij van alle producten en biedt methodes om producten op te halen,
+ * te zoeken op naam, categorie of willekeurig te kiezen.
+ */
 public class ProductCatalog {
+
+    /** lijst van alle producten in de catalogus */
     private static List<Product> catalog;
+
+    /** random generator voor willekeurige producten */
     private Random random;
 
-
+    /** maakt een nieuwe productcatalogus en initialiseert de lijst met standaardproducten */
     public ProductCatalog() {
         this.catalog = new ArrayList<>();
         this.random = new Random();
-        // Wordt statisch geïnitialiseerd bij het opstarten
         initializeCatalog();
     }
 
-
-    // Lijst van producten
+    /** vult de catalogus met een vaste set van producten bij het opstarten */
     private void initializeCatalog() {
+        catalog.add(new DrinkProduct("heineken", 2.50, "bier"));
+        catalog.add(new DrinkProduct("coca cola", 1.99, "frisdrank"));
+        catalog.add(new DrinkProduct("spa rood", 0.89, "water"));
+        catalog.add(new DrinkProduct("rode wijn", 7.99, "wijn"));
+        catalog.add(new DrinkProduct("melk", 1.29, "zuivel"));
+        catalog.add(new DrinkProduct("jus d'orange", 2.49, "sap"));
 
-        catalog.add(new DrinkProduct("Heineken", 2.50, "Bier"));
-        catalog.add(new DrinkProduct("Coca Cola", 1.99, "Frisdrank"));
-        catalog.add(new DrinkProduct("Spa Rood", 0.89, "Water"));
-        catalog.add(new DrinkProduct("Rode Wijn", 7.99, "Wijn"));
-        catalog.add(new DrinkProduct("Melk", 1.29, "Zuivel"));
-        catalog.add(new DrinkProduct("Jus d'Orange", 2.49, "Sap"));
+        catalog.add(new FrozenProduct("ben & jerry's cookie dough", 5.99, "ijs"));
+        catalog.add(new FrozenProduct("iglo vissticks", 3.49, "diepvries"));
+        catalog.add(new FrozenProduct("pizza margherita", 2.99, "diepvries"));
+        catalog.add(new FrozenProduct("friet", 1.79, "diepvries"));
+        catalog.add(new FrozenProduct("magnum classic", 3.99, "ijs"));
 
-        catalog.add(new FrozenProduct("Ben & Jerry's Cookie Dough", 5.99, "IJs"));
-        catalog.add(new FrozenProduct("Iglo Vissticks", 3.49, "Diepvries"));
-        catalog.add(new FrozenProduct("Pizza Margherita", 2.99, "Diepvries"));
-        catalog.add(new FrozenProduct("Friet", 1.79, "Diepvries"));
-        catalog.add(new FrozenProduct("Magnum Classic", 3.99, "IJs"));
-
-        catalog.add(new GeneralProduct("Lays Paprika", 1.99, "Snacks"));
-        catalog.add(new GeneralProduct("Brood Wit", 1.49, "Bakkerij"));
-        catalog.add(new GeneralProduct("Toiletpapier", 4.99, "Huishouden"));
-        catalog.add(new GeneralProduct("Appels", 2.29, "Groente & Fruit"));
-        catalog.add(new GeneralProduct("Koffie", 3.99, "Koffie & Thee"));
-        catalog.add(new GeneralProduct("Pasta", 0.99, "Pasta & Rijst"));
-        catalog.add(new GeneralProduct("Kaas", 3.49, "Zuivel"));
-        catalog.add(new GeneralProduct("Chips Naturel", 1.79, "Snacks"));
-        catalog.add(new GeneralProduct("Bananen", 1.89, "Groente & Fruit"));
-        catalog.add(new GeneralProduct("Rijst", 2.29, "Pasta & Rijst"));
+        catalog.add(new GeneralProduct("lays paprika", 1.99, "snacks"));
+        catalog.add(new GeneralProduct("brood wit", 1.49, "bakkerij"));
+        catalog.add(new GeneralProduct("toiletpapier", 4.99, "huishouden"));
+        catalog.add(new GeneralProduct("appels", 2.29, "groente & fruit"));
+        catalog.add(new GeneralProduct("koffie", 3.99, "koffie & thee"));
+        catalog.add(new GeneralProduct("pasta", 0.99, "pasta & rijst"));
+        catalog.add(new GeneralProduct("kaas", 3.49, "zuivel"));
+        catalog.add(new GeneralProduct("chips naturel", 1.79, "snacks"));
+        catalog.add(new GeneralProduct("bananen", 1.89, "groente & fruit"));
+        catalog.add(new GeneralProduct("rijst", 2.29, "pasta & rijst"));
     }
 
-    // Haalt alle producten op
+    /**
+     * @return een nieuwe lijst met alle producten in de catalogus
+     */
     public List<Product> getAllProducts() {
         return new ArrayList<>(catalog);
     }
 
-    // Zoekt product op met bepaalde naam
+    /**
+     * zoekt een product op basis van de naam
+     *
+     * @param name de naam van het product
+     * @return het product als het gevonden is, anders null
+     */
     public static Product getProductByName(String name) {
         for (Product p : catalog) {
             if (p.getName().equalsIgnoreCase(name)) {
@@ -60,7 +73,12 @@ public class ProductCatalog {
         return null;
     }
 
-    // Geeft lijst terug van alle producten die tot een bepaalde categorie horen
+    /**
+     * geeft een lijst terug van alle producten die tot een bepaalde categorie horen
+     *
+     * @param category de categorie om te filteren
+     * @return lijst van producten in de opgegeven categorie
+     */
     public List<Product> getProductsByCategory(String category) {
         List<Product> result = new ArrayList<>();
         for (Product p : catalog) {
@@ -71,18 +89,28 @@ public class ProductCatalog {
         return result;
     }
 
-    // Kiest willekeurig product uit catalogus
+    /**
+     * kiest een willekeurig product uit de catalogus
+     *
+     * @return een random product
+     */
     public Product getRandomProduct() {
         int index = random.nextInt(catalog.size());
         return catalog.get(index);
     }
 
-    // Voegt een product toe aan de catalogus
+    /**
+     * voegt een nieuw product toe aan de catalogus
+     *
+     * @param product het product dat toegevoegd wordt
+     */
     public void addProduct(Product product) {
         catalog.add(product);
     }
 
-    // Geeft het aantal producten in de catalogus terug
+    /**
+     * @return het totale aantal producten in de catalogus
+     */
     public int getTotalProducts() {
         return catalog.size();
     }

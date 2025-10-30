@@ -1,29 +1,35 @@
 package org.example.supermarket;
 
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.ImagePattern;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
+/**
+ * een medewerker die schappen bijvult in de supermarkt.
+ * beweegt tussen opslag en schappen, pakt producten en vult de schappen aan.
+ */
 public class Restocker extends Person {
+
+    /** huidige staat van de restocker */
     private CustomerState state = CustomerState.WALKING_TO_STORAGE;
+
+    /** tijd in seconden om één product te pakken of plaatsen */
     private final double pickTime = 1.0;
+
+    /** tijdstip waarop de huidige actie gestart is */
     private long stateStartTime;
+
+    /** maximale voorraad die de restocker kan dragen */
     private int maxStock = 10;
+
+    /** huidige voorraad bij de restocker */
     private int currentStock;
+
+    /** het schap dat de restocker momenteel vult */
     private Shelve shelve;
 
-    public Restocker(String name, BorderPane borderPane) {
-        super(name, borderPane, Color.RED, Store.entrance.getX(), Store.entrance.getY(), 50, 50);
-        healthbar = new Healthbar(stack, currentStock, maxStock, this.rectangle.getX(), this.rectangle.getY() - 20, 50);
-        updateHealth();
-        moveToStorage();
-    }
-
+    /**
+     * mogelijke staten van de restocker tijdens zijn werk
+     */
     public enum CustomerState {
         WALKING_TO_STORAGE,
         PICKING_BOX,
@@ -32,28 +38,42 @@ public class Restocker extends Person {
         WAITING_FOR_ORDER
     }
 
+    /**
+     * maakt een nieuwe restocker aan op de ingang van de supermarkt
+     *
+     * @param name naam van de restocker
+     * @param borderPane het pane waarin de restocker weergegeven wordt
+     */
+    public Restocker(String name, BorderPane borderPane) {
+        super(name, borderPane, Color.RED, Store.entrance.getX(), Store.entrance.getY(), 50, 50);
+        healthbar = new Healthbar(stack, currentStock, maxStock, this.rectangle.getX(), this.rectangle.getY() - 20, 50);
+        updateHealth();
+        moveToStorage();
+    }
 
+    /** verplaatst de restocker naar de opslag */
     private void moveToStorage() {
         GameObject target = Store.storage;
         moveTo(target.getX(), target.getY());
-        state = Restocker.CustomerState.WALKING_TO_STORAGE;
+        state = CustomerState.WALKING_TO_STORAGE;
     }
 
+    /** verplaatst de restocker naar het toegewezen schap */
     private void moveToShelf() {
         GameObject target = shelve;
         moveTo(target.getX(), target.getY());
-        state = Restocker.CustomerState.WALKING_TO_SHELF;
-        System.out.println("Moving to shelf");
-
+        state = CustomerState.WALKING_TO_SHELF;
+        System.out.println("moving to shelf");
     }
 
+    /** update de staat van de restocker en voert acties uit afhankelijk van de huidige staat */
     public void update() {
         switch (state) {
             case WALKING_TO_STORAGE:
                 if (isAtDestination()) {
                     state = CustomerState.PICKING_BOX;
                     stateStartTime = System.currentTimeMillis();
-                    System.out.println("Is in storage");
+                    System.out.println("is in storage");
                 }
                 break;
 
@@ -75,7 +95,7 @@ public class Restocker extends Person {
                 if (isAtDestination()) {
                     state = CustomerState.STOCKING_SHELF;
                     stateStartTime = System.currentTimeMillis();
-                    System.out.println("Is in shelf " + shelve.objectName);
+                    System.out.println("is in shelf " + shelve.objectName);
                 }
                 break;
 
@@ -85,7 +105,7 @@ public class Restocker extends Person {
                     shelve.addProduct();
                     currentStock--;
                     updateHealth();
-                    System.out.println("PutProduct " + shelve.objectName);
+                    System.out.println("put product " + shelve.objectName);
 
                     if (currentStock == 0) {
                         moveToStorage();
@@ -93,7 +113,7 @@ public class Restocker extends Person {
                     }
                 }
                 if (shelve.getCurrentCapacity() == shelve.getMaxCapacity()) {
-                    System.out.println("Shelve " + shelve.objectName + " is full");
+                    System.out.println("shelve " + shelve.objectName + " is full");
                     if (currentStock <= maxStock / 2) {
                         shelve = null;
                         moveToStorage();
@@ -109,64 +129,23 @@ public class Restocker extends Person {
         }
     }
 
-
-
-//    public void update(double deltaTime, BorderPane borderPane) {
-//        switch (state) {
-//            case WALKING_TO_SHELF:
-//                if (isAtDestination()) {
-//                    state = CustomerState.PICKING_ITEM;
-//                    stateStartTime = System.currentTimeMillis();
-//                }
-//                break;
-//            case PICKING_ITEM:
-//                if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > pickTime) {
-//                    Shelve currentShelve = (Shelve) shoppingList.peek();
-//                    if (currentShelve.getCurrentCapacity() > 0) {
-//                        addProductToCart(shoppingList.peek().getName());
-//                        currentShelve.removeProduct();
-//                    }
-//                    shoppingList.poll(); // done picking at this shelf
-//                    moveToNextShelf();
-//                }
-//                break;
-//            case WALKING_TO_CHECKOUT:
-//                if (isAtDestination()) {
-//                    state = CustomerState.WAITING_IN_LINE;
-//                }
-//                break;
-//            case WAITING_IN_LINE:
-//                if (isAtDestination()) {
-//                    state = CustomerState.CHECKING_OUT;
-//                    stateStartTime = System.currentTimeMillis();
-//                }
-//                break;
-//            case CHECKING_OUT:
-//                if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > shoppingCart.items.size()) {
-//                    moveTo(Store.exit.getX(), Store.exit.getY());
-//                    Store.pay(shoppingCart.calculateTotal());
-//                    System.out.println(shoppingCart.items.size() + "/" +  shoppingCart.calculateTotal() + "/" + Store.storeMoney);
-//                    state = CustomerState.WALKING_TO_EXIT;
-//                }
-//                break;
-//            case WALKING_TO_EXIT:
-//                if (isAtDestination()) {
-//                    state = CustomerState.DONE;
-//                }
-//                break;
-//            case DONE:
-//        }
-//    }
-
+    /** @return de huidige staat van de restocker */
     public CustomerState getState() {
         return state;
     }
+
+    /**
+     * wijst een schap toe aan de restocker en laat hem er naartoe bewegen
+     *
+     * @param shelve het schap dat bijgevuld moet worden
+     */
     public void giveOrder(Shelve shelve) {
         this.shelve = shelve;
         this.moveToShelf();
         state = CustomerState.WALKING_TO_SHELF;
     }
 
+    /** werkt de healthbar bij op basis van de huidige voorraad van de restocker */
     private void updateHealth() {
         this.healthbar.updateHealthBar(currentStock, Healthbar.ObjectType.RESTOCKER);
     }
