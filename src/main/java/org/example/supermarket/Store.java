@@ -65,9 +65,9 @@ public class Store {
         customerCounter.update();
 
         // Meerdere checkouts aanmaken
-        checkouts.add(new Checkout("C1", borderPane, 500, 400));
-        checkouts.add(new Checkout("C2", borderPane, 500, 600));
-        checkouts.add(new Checkout("C3", borderPane, 500, 800));
+        checkouts.add(new Checkout("C1", borderPane, 300, 400));
+        checkouts.add(new Checkout("C2", borderPane, 300, 600));
+        checkouts.add(new Checkout("C3", borderPane, 300, 800));
 
         // Logica om de Shelves te maken gebaseerd op de bestaande producten in products
         int[] xPositions = {800, 1000, 1200, 1400, 1600};
