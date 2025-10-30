@@ -16,6 +16,7 @@ public class Customer extends Person {
     private CustomerState state = CustomerState.WALKING_TO_SHELF;
     private final double pickTime = 1.0;
     private long stateStartTime;
+    private Checkout myCheckout;  // De gekozen kassa voor deze klant (voor rij-beheer)
 
     public Customer(String name, BorderPane borderPane, List<GameObject> shelves) {
         super(name, borderPane, Color.GREEN, Store.entrance.getX(), Store.entrance.getY(), 50, 50);
@@ -40,11 +41,16 @@ public class Customer extends Person {
             GameObject target = shoppingList.peek();
             moveTo(target.stack.getLayoutX(), target.stack.getLayoutY());
             state = CustomerState.WALKING_TO_SHELF;
-        }
-        else{
+        } else {
             int targetNumber = rand.nextInt(Store.checkouts.size());
-            GameObject target = Store.checkouts.get(targetNumber);
-            moveTo(target.getX(), target.getY() - this.rectangle.getHeight() - 5);
+            Checkout selectedCheckout = (Checkout) Store.checkouts.get(targetNumber);
+            myCheckout = selectedCheckout;
+
+            // Bereken positie horizontaal naar rechts vanaf de kassa
+            int currentLineSize = myCheckout.getLineSize();
+            double targetX = myCheckout.getX() + myCheckout.rectangle.getWidth() + (currentLineSize + 1) * (this.rectangle.getWidth() + 10);
+            double targetY = myCheckout.getY();
+            moveTo(targetX, targetY);
             state = CustomerState.WALKING_TO_CHECKOUT;
         }
         stateStartTime = System.currentTimeMillis();
@@ -72,31 +78,48 @@ public class Customer extends Person {
                         addProductToCart(shoppingList.peek().getName());
                         updateHealth();
                         currentShelve.removeProduct();
-                        if (currentShelve.needsRestock() &! Controller.isInRestockingShelves(currentShelve)) {
+                        if (currentShelve.needsRestock() && !Controller.isInRestockingShelves(currentShelve)) {
                             Controller.restockingShelves.add(currentShelve);
                             System.out.println("Product " + currentShelve.getName() + " needs restock");
                         }
                     }
-                    shoppingList.poll(); // done picking at this shelf
+                    shoppingList.poll();
                     moveToNextShelf();
                 }
                 break;
             case WALKING_TO_CHECKOUT:
                 if (isAtDestination()) {
+                    myCheckout.addToLine(this);
                     state = CustomerState.WAITING_IN_LINE;
                 }
                 break;
             case WAITING_IN_LINE:
-                if (isAtDestination()) {
-                    state = CustomerState.CHECKING_OUT;
-                    stateStartTime = System.currentTimeMillis();
+                // Horizontale rij-logica: beweeg naar rechts vanaf de kassa
+                int myPosition = myCheckout.getLinePosition(this);
+                if (myPosition == 0) {
+                    // Eerste in rij: beweeg naar de kassa (direct rechts van de kassa)
+                    double frontX = myCheckout.getX() + myCheckout.rectangle.getWidth() + 10;
+                    double frontY = myCheckout.getY();
+                    if (Math.abs(getX() - frontX) > 1 || Math.abs(getY() - frontY) > 1) {
+                        moveTo(frontX, frontY);
+                    } else {
+                        state = CustomerState.CHECKING_OUT;
+                        stateStartTime = System.currentTimeMillis();
+                    }
+                } else {
+                    // Niet eerste: update positie in horizontale rij
+                    double targetX = myCheckout.getX() + myCheckout.rectangle.getWidth() + (myPosition + 1) * (this.rectangle.getWidth() + 10);
+                    double targetY = myCheckout.getY();
+                    if (Math.abs(getX() - targetX) > 1 || Math.abs(getY() - targetY) > 1) {
+                        moveTo(targetX, targetY);
+                    }
                 }
                 break;
             case CHECKING_OUT:
                 if ((System.currentTimeMillis() - stateStartTime) / 1000.0 > shoppingCart.items.size()) {
+                    myCheckout.removeFromLine(this);
                     moveTo(Store.exit.getX(), Store.exit.getY());
                     Store.pay(shoppingCart.calculateTotal());
-//                    System.out.println(shoppingCart.items.size() + "/" +  shoppingCart.calculateTotal() + "/" + Store.storeMoney);
                     state = CustomerState.WALKING_TO_EXIT;
                 }
                 break;
@@ -106,17 +129,18 @@ public class Customer extends Person {
                 }
                 break;
             case DONE:
+                break;
         }
     }
 
     private void updateHealth() {
         this.healthbar.updateHealthBar(shoppingCart.items.size(), Healthbar.ObjectType.CUSTOMER);
     }
+
     private void addProductToCart(String productName) {
         Product product = ProductCatalog.getProductByName(productName);
         shoppingCart.addItem(product);
     }
-
 
     public boolean isDone() {
         return state == CustomerState.DONE;
