@@ -198,12 +198,11 @@ class ShoppingCartTest {
 
 /**
  * Unit tests voor de Shelve klasse
- * Merk op: Deze test gebruikt JavaFX componenten, dus je hebt mogelijk JavaFX test setup nodig
  */
 class ShelveLogicTest {
 
     /**
-     * Testbare wrapper voor Shelve zonder JavaFX dependencies
+     * Testbare wrapper voor Shelve
      */
     static class TestableShelve {
         private int maxCapacity;
