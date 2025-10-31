@@ -1,7 +1,7 @@
 package org.example.supermarket;
 
 /**
- * vertegenwoordigt een algemeen product in de supermarkt,
+ * een algemeen product in de supermarkt,
  * zonder speciale eigenschappen zoals gekoeld of bevroren.
  */
 public class GeneralProduct extends Product {

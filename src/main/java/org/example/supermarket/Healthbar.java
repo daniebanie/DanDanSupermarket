@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * visualiseert de capaciteit of status van een object in de supermarkt,
+ * laat de capaciteit of status van een object in de supermarkt zien,
  * zoals een schap, klant of restocker.
  */
 public class Healthbar {

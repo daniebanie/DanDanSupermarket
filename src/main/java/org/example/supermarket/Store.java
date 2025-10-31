@@ -5,7 +5,7 @@ import java.util.List;
 import javafx.scene.layout.BorderPane;
 
 /**
- * vertegenwoordigt de supermarkt en beheert alle onderdelen zoals kassa's,
+ * de supermarkt en beheert alle onderdelen zoals kassa's,
  * schappen, klanten en restockers. bevat methodes om de winkel te creëren
  * en betalingen te verwerken.
  */

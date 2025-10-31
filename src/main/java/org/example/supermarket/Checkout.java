@@ -6,6 +6,7 @@ import javafx.scene.layout.BorderPane;
 import java.util.LinkedList;
 import java.util.Queue;
 
+
 public class Checkout extends GameObject{
     /**
      * stelt een kassa voor met een wachtrij voor klanten

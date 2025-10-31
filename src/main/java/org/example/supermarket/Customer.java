@@ -9,10 +9,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+
+/**
+ * een klant in de supermarkt die automatisch producten verzamelt, afrekent en vertrekt
+ */
 public class Customer extends Person {
-    /**
-     * een klant in de supermarkt die automatisch producten verzamelt, afrekent en vertrekt
-     */
     private Queue<GameObject> shoppingList = new LinkedList<GameObject>();
     private ShoppingCart shoppingCart = new ShoppingCart();
     private CustomerState state = CustomerState.WALKING_TO_SHELF;

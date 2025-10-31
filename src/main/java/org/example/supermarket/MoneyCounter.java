@@ -9,7 +9,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 /**
- * vertegenwoordigt een teller voor het bijhouden van het geld in de supermarkt.
+ * een teller voor het bijhouden van het geld in de supermarkt.
  * toont het huidige bedrag visueel op het scherm.
  */
 public class MoneyCounter {
