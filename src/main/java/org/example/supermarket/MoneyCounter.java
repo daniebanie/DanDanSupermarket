@@ -43,6 +43,6 @@ public class MoneyCounter {
 
     /** werkt de weergegeven waarde bij op basis van het huidige geld in de winkel */
     public void update() {
-        this.text.setText("money: " + String.format("%.2f", Store.storeMoney));
+        this.text.setText("Money: " + String.format("%.2f", Store.storeMoney));
     }
 }
